@@ -98,5 +98,3 @@ Open [http://localhost:3000](https://www.google.com/search?q=http://localhost:30
 ## 🚀 Deployment
 
 This project is deployed on **Vercel**. The deployment is automatically triggered upon pushing new commits to the `main` branch of the [GitHub repository](https://github.com/amin-kian/My-Blog).
-
-The necessary environment variables (like `MONGODB_CONNECTION_STRING`) have been configured in the Vercel project settings for a seamless build and deployment process.
