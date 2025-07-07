@@ -1,5 +1,4 @@
 import {MongoClient} from 'mongodb';
-import process from "next/dist/build/webpack/loaders/resolve-url-loader/lib/postcss";
 
 async function handler(req, res) {
     if (req.method === 'POST') {
