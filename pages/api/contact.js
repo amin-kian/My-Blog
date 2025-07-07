@@ -1,4 +1,3 @@
-// ✅ آن import اشتباه و خطرناک حذف شده است
 import {MongoClient} from 'mongodb';
 
 async function handler(req, res) {
@@ -12,16 +11,18 @@ async function handler(req, res) {
             return;
         }
 
-        const newMessage = {
-            email,
-            name,
-            message,
-        };
-
+        const newMessage = {email, name, message};
         let client;
 
-        // این کد حالا به درستی کار خواهد کرد چون process.env سالم است
-        const connectionString = `mongodb+srv://${process.env.mongodb_username}:${process.env.mongodb_password}@${process.env.mongodb_clustername}.qyficsf.mongodb.net/${process.env.mongodb_database}?retryWrites=true&w=majority`;
+        // ✅ به این شکل از متغیر محیطی امن و واحد استفاده کنید
+        const connectionString = process.env.MONGODB_CONNECTION_STRING;
+
+        // اگر متغیر تعریف نشده بود، خطا بده
+        if (!connectionString) {
+            console.error('MONGODB_CONNECTION_STRING environment variable is not set.');
+            res.status(500).json({message: 'Server configuration error.'});
+            return;
+        }
 
         try {
             client = await MongoClient.connect(connectionString);
@@ -34,9 +35,7 @@ async function handler(req, res) {
         const db = client.db();
 
         try {
-            // مطمئن شوید نام کالکشن درست است (messages)
-            const result = await db.collection('messages').insertOne(newMessage);
-            newMessage.id = result.insertedId;
+            await db.collection('messages').insertOne(newMessage);
         } catch (error) {
             client.close();
             console.error("STORING MESSAGE FAILED:", error);
@@ -45,10 +44,7 @@ async function handler(req, res) {
         }
 
         client.close();
-
-        res
-            .status(201)
-            .json({message: 'Successfully stored message!', message: newMessage});
+        res.status(201).json({message: 'Successfully stored message!'});
     }
 }
 
